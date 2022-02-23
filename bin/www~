@@ -1,0 +1,165 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('project:server');
+var http = require('http');
+const fs = require('fs');
+
+const https = require('https');
+// Certificate
+const privateKey = fs.readFileSync('/home/centos/tls/www.appwanna.com.key', 'utf8');///etc/letsencrypt/live/geebwady.com/privkey.pem
+const certificate = fs.readFileSync('/home/centos/tls/www.appwanna.com.cer', 'utf8');///etc/letsencrypt/live/geebwady.com/fullchain.pem
+const ca = fs.readFileSync('/home/centos/tls/www.appwanna.com.cer', 'utf8');///etc/letsencrypt/live/geebwady.com/fullchain.pem
+
+const credentials = {
+	key: privateKey,
+	cert: certificate,
+	ca: ca
+};
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '8080');
+app.set('port', port);
+
+/**
+ * Create HTTPS server.
+ */
+
+//var server = http.createServer(app);
+var server = https.createServer(credentials, app);
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+//socket
+var server = https.createServer(credentials, app);
+
+//var Message = require('../models/message/message.model');
+var ioserver = require('socket.io');
+var io = new ioserver(server);
+var socketService = require('../socketService/socketIoService');
+io.on( 'connection', function( socket ){
+	
+	console.log( 'User ' + socket.id + ' connected' );
+});
+socketService.startChat(io);
+socketService.startNotification(io);
+//////////////////////////// //////////////////////////// //////////////////////////// //////////////////////////// 
+/*
+var nsp = io.of('/chat');
+
+nsp.on('connection',function(socket){
+ var myId = socket.handshake.query.id;
+ var roomName = 'room-'+ myId;
+ socket.join(roomName);
+ 
+
+ socket.on('newMessage',function(data){
+   var toRoom = 'room-'+data.toId;
+   var messData = {
+     to: data.toId,
+     from: data.fromId,
+     content: data.message
+   }
+   var message = new Message(messData);      
+   message.save()
+     .then(result=>{
+       console.log('message saved');
+       console.log(result);
+
+       nsp.to(toRoom).emit('newMessage',data);
+     })
+     .catch(err=>{
+       console.log(err);
+     });
+  });
+
+//   the data content is : 
+  // {
+    // message: this.message,
+     //toId: this.selected.id,
+     //fromId: this.id,
+     //incommingDate : Date.now()
+  // }
+ 
+  socket.on('typing',function(data){
+    var toRoom = 'room-'+data.toId;
+    nsp.to(toRoom).emit('typing',data); 
+  });
+
+  socket.on('disconnect',function(){
+    console.log('client disconnected');
+  });
+
+ });
+*/
+//////////////////////////// //////////////////////////// //////////////////////////// //////////////////////////// //////////////////////////// 
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}

@@ -1,0 +1,23 @@
+{
+	"<A>": "----------------------------------------------------------------------------",
+	"<A-Title>": "Registration Validation",
+	"name.required": "الاسم حقل إلْزاميّ",
+	"password.required": "الباسورد حقل إلْزاميّ",
+	"email.required": "الايميل حقل إلْزاميّ",
+	"email.syntax": "برجاء إدخال الايميل بصورة صحيحة",
+	"email.duplicated": "الايميل مسجل من قبل",
+	"country.required": " الدولة حقل الزامي ",
+	"city.required": "المدينة حقل الزامي",
+	"profileImg.required": " الصورة الشخصية حقل الزامي ",
+	"profileImg.syntax": " يرجي ادخال صورة شخصية بصيغة صحيحة  ",
+	"phone.required": "رقم الهاتف حقل إلْزاميّ",
+	"phone.duplicated": "رقم الهاتف مسجل من قبل",
+	"type.required": "النوع حقل الزامي",
+	"<B>": "----------------------------------------------------------------------------",
+	"<B-Title>": "Car Center",
+	"carCenter.auth": "المستخدم يجب ان يكون ",
+	"carCenterName.required": "carCenterName.required",
+	"user.carCenter": "هذا العضو لديه معرض سيارات",
+	"phone duplicated": "phone duplicated",
+	"email duplicated": "email duplicated"
+}
